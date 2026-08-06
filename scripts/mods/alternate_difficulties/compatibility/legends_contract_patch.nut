@@ -14,7 +14,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 				::AlternateDifficulties.ContractOffers.applyNormalContractOffer(this);
 			}
 
-			q.getScaledDifficultyMult = function()
+			q.getScaledDifficultyMult = @(__original) function()
 			{
 				local snapshot = ::AlternateDifficulties.RosterScaling.getSnapshot();
 				local customDifficultyMultiplier = ::AlternateDifficulties.Mod.ModSettings
@@ -33,7 +33,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 				return finalMultiplier;
 			}
 
-			q.getPaymentMult = function()
+			q.getPaymentMult = @(__original) function()
 			{
 				local repDiffMult = this.Math.pow(this.getScaledDifficultyMult(), 0.5);
 				local broMult = this.World.State.getPlayer().getBarterMult();
