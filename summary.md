@@ -34,11 +34,24 @@ The relevant code is in:
 `getScaledDifficultyMult()`.
 
 The replacement does not read `World.getTime().Days`, player strength, item
-value, or Legends' combat-difficulty setting. It currently calculates:
+value, or Legends' combat-difficulty setting. It calculates the roster-based
+part of a contract's enemy budget:
 
 ```text
-final encounter multiplier = deployed-roster multiplier × Custom Enemy Difficulty
+scaled multiplier = deployed-roster multiplier × Custom Enemy Difficulty
 ```
+
+Normal contract scripts then calculate enemy resources by multiplying their
+base resources by both the contract skull and this scaled multiplier:
+
+```text
+enemy resources = base contract resources × contract skull × scaled multiplier
+```
+
+`contract skull` is `this.m.DifficultyMult`, returned by
+`getDifficultyMult()`. Therefore the skull remains the player-visible measure
+of contract enemy strength, while the global Legends combat-difficulty option
+does not contribute to the calculation.
 
 The relevant code is in:
 
@@ -85,8 +98,9 @@ scripts that use campaign day.
 ## Contract skulls and payments
 
 The current mod also assigns a random 1–4 skull value to normal contracts.
-That value is used for skull display and payment scaling, not for the
-replacement contract encounter multiplier.
+That value affects both enemy resources and payment scaling. Contract scripts
+use `getDifficultyMult()` (the skull value) together with
+`getScaledDifficultyMult()` when spawning enemies.
 
 Relevant functions:
 
@@ -95,5 +109,35 @@ Relevant functions:
 - `q.create()` calls `applyNormalContractOffer()` after a contract is created.
 - `q.getPaymentMult()` applies the skull's payment multiplier.
 
-If contract skull and payment difficulty should also be disregarded, remove the
-contract-offer system and the custom `getPaymentMult()` override.
+For example, with three brothers at levels 1, 2, and 3, the roster multiplier
+is clamped to `0.75`. With the default Custom Enemy Difficulty setting of
+`1.10`, the scaled multiplier is `0.825`. The resulting skull multipliers are
+`0.70125`, `0.825`, `1.03125`, and `1.2375` for skulls 1 through 4.
+
+## Developer Test Lab
+
+The disabled-by-default **Developer Test Lab** in Mod Settings is intended for
+a disposable new campaign. Every operation needs two deliberate actions:
+enable the Test Lab and press its button. Nothing is triggered by loading a
+save, entering a settlement, or changing a setting.
+
+- **Set All Roster Levels** only raises each current brother (including
+  reserves) to the selected level; it does not lower levels or touch gear.
+- **Grant Mid-tier Loadout** adds one non-named kit per current brother to the
+  stash: `mail_hauberk`, `nasal_helmet_with_mail`, `hand_axe`, `warhammer`,
+  `arming_sword`, `flail`, and `billhook`. It never equips or removes items,
+  and refuses a partial grant when there is insufficient stash space.
+- **Grant Crowns** adds the selected amount exactly once for a button press.
+- **Generate Selected Normal Contract** invokes the game’s own normal faction
+  action, so it cannot fabricate arena, crisis, legendary-hunt, or boss
+  contracts. It keeps all existing offers and changes only the created offer’s
+  skull before it is displayed.
+
+See `README.md` for the user instructions and `docs/compatibility.md` for the
+normal-contract allow-list and exclusions.
+
+## Build output
+
+Running `modbb` from the mod directory creates the local release archive in
+`dist/mod_alternate_difficulties.zip` before attempting deployment to the
+game's `data` folder.

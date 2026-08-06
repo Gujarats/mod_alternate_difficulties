@@ -31,7 +31,7 @@ The **Custom Enemy Difficulty** setting is available in Mod Settings during a ca
 
 ## Contract skulls
 
-The planned normal-contract offer values are:
+Reviewed normal-contract types receive one fixed offer value when created:
 
 | Skull | Encounter multiplier | Payment multiplier |
 | --- | ---: | ---: |
@@ -40,7 +40,32 @@ The planned normal-contract offer values are:
 | 3 | 1.25 | 1.35 |
 | 4 | 1.50 | 1.80 |
 
-Authored special contracts retain their own difficulty until they are individually reviewed for compatibility.
+The skull is still multiplied into the contract's enemy budget, so it is the
+visible contract-risk choice. Authored special contracts retain their own
+difficulty until individually reviewed; see [compatibility.md](docs/compatibility.md).
+
+## Developer Test Lab
+
+The **Developer Test Lab** page is disabled by default and is intended for a
+disposable new campaign. Nothing runs when a save loads, a town is entered, or
+a setting changes. Enable it, then press one explicit action button:
+
+- **Set All Roster Levels** raises every current brother, including reserves,
+  to the selected level. It never lowers a brother, adds money, or changes gear.
+- **Grant Mid-tier Loadout** adds one complete non-named kit per current
+  brother to the stash. Each kit contains `mail_hauberk`,
+  `nasal_helmet_with_mail`, `hand_axe`, `warhammer`, `arming_sword`, `flail`,
+  and `billhook`. It never equips, replaces, or removes an item. It does
+  nothing if the stash does not have room for the complete grant.
+- **Grant Crowns** adds exactly the configured amount once for that button
+  press.
+- **Generate Selected Normal Contract** creates exactly one selected contract
+  only through the game's native faction action. It preserves existing offers,
+  refuses unavailable world requirements, and then applies the selected 1-4
+  skull before the offer is displayed. The supported test types are Drive Off
+  Brigands, Investigate Cemetery, Hunt Webknechts, Hunt Unholds, and Drive Off
+  Nomads. The settlement must be that faction's contract home, so this cannot
+  place an offer in another town.
 
 ## Debug logging
 
@@ -50,4 +75,6 @@ Debug logging is enabled by default and can be changed in Mod Settings. Logs are
 
 ## Build
 
-Build with `modbb`. The archive is produced under `mod_alternate_difficulties/build`.
+From the `mod_alternate_difficulties` directory, build with `modbb`. This
+template writes the local archive under `mod_alternate_difficulties/dist`, then
+attempts to copy it into the game's `data` directory.
