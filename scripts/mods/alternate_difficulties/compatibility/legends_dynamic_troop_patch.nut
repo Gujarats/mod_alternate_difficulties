@@ -42,6 +42,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 		// Legends normally lets campaign day eventually bypass MinR; this version
 		// never does, so an under-budget troop cannot be selected just because the
 		// campaign is later.
+		// siden note : the removal of enemies scaling with days are removed in this function
 		::Const.World.Common.dynamicSelectTroop <- function (_list, _resources, _scale, _map, _credits)
 		{
 			local candidates = [];
@@ -58,7 +59,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 				{
 					continue;
 				}
-		
+
 				// Don't pick an entry below its minimum resource threshold. Unlike
 				// Legends' original, campaign day does not bypass this check.
 				if ("MinR" in t)
@@ -72,14 +73,14 @@ if (!("Compatibility" in ::AlternateDifficulties))
 					{
 						minr = t.MinR;
 					}
-		
+
 					if (_resources < minr)
 					{
 						::AlternateDifficulties.Mod.Debug.printLog("[AlternateDifficulties][DynamicTroops] excluded MinR troop minR=" + minr + " resources=" + _resources);
 						continue;
 					}
 				}
-		
+
 				local w = 0;
 				if (typeof(t.Weight) == "function")
 				{
@@ -89,7 +90,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 				{
 					w = t.Weight;
 				}
-		
+
 				if (w == 0)
 				{
 					T.push(t);
@@ -98,7 +99,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 				totalWeight += w;
 				candidates.push(t);
 			}
-		
+
 			local r = this.Math.rand(1, totalWeight);
 			foreach (t in candidates)
 			{
@@ -119,12 +120,12 @@ if (!("Compatibility" in ::AlternateDifficulties))
 				T.push(t);
 				break;
 			}
-		
+
 			foreach (troop in T)
 			{
 				if ("Type" in troop)
 				{
-		
+
 					local key = troop.Type.Script;
 					if (!(key in _map))
 					{
@@ -133,7 +134,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 							Num = 0
 						}
 					}
-		
+
 					if ("Roll" in troop)
 					{
 						if (typeof(troop.Roll) == "function")
@@ -152,11 +153,11 @@ if (!("Compatibility" in ::AlternateDifficulties))
 							}
 						}
 					}
-		
+
 					_credits -= troop.Cost;
 					_map[key].Num += 1;
-		
-		
+
+
 					if ("MaxCount" in troop)
 					{
 						for (local i = 1; i < troop.MaxCount; i = ++i)
@@ -165,7 +166,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 							{
 								break;
 							}
-		
+
 							local w = 100;
 							if (typeof(troop.Weight) == "function")
 							{
@@ -175,7 +176,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 							{
 								w = troop.Weight;
 							}
-		
+
 							if (this.Math.rand(0, 100) < w)
 							{
 								_credits -= troop.Cost;
@@ -191,10 +192,10 @@ if (!("Compatibility" in ::AlternateDifficulties))
 							}
 						}
 					}
-		
+
 				}
-		
-		
+
+
 				if ("Guards" in troop)
 				{
 					local maxCount = "MaxGuards" in troop ? troop.MaxGuards : 1;
@@ -211,26 +212,26 @@ if (!("Compatibility" in ::AlternateDifficulties))
 						{
 							continue;
 						}
-		
+
 						_credits = this.Const.World.Common.dynamicSelectTroop(troop.Guards, _resources, _scale, _map, _credits);
-		
+
 						if (_credits < 0)
 						{
 							break;
 						}
 					}
 				}
-		
+
 				if (_credits < 0)
 				{
 					return _credits;
 				}
-		
+
 				if (!("SortedTypes" in troop))
 				{
 					continue;
 				}
-		
+
 				local points = troop.SortedTypes[0].Cost;
 				if (troop.SortedTypes.len() > 1)
 				{
@@ -238,7 +239,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 					points = this.Math.max(points, this.Const.LegendMod.BoxMuller.BoxMuller(meanScaled, troop.Deviation));
 					//this.logInfo(cat + " Mean " + meanScaled + " : Deviation " + troops.Deviation + " : Points " + points)
 				}
-		
+
 				//Always purchase the most expensive unit we can
 				for (local i = troop.SortedTypes.len() - 1; i >= 0; i = --i)
 				{
@@ -246,14 +247,14 @@ if (!("Compatibility" in ::AlternateDifficulties))
 					{
 						continue;
 					}
-		
+
 					local index = this.Math.rand(0, troop.SortedTypes[i].Types.len() - 1);
-		
+
 					if ("MaxR" in troop.SortedTypes[i].Types[index] && _resources > troop.SortedTypes[i].Types[index].MaxR)
 					{
 						continue;
 					}
-		
+
 					if ("MinR" in  troop.SortedTypes[i].Types[index])
 					{
 						local minr = 0;
@@ -265,14 +266,14 @@ if (!("Compatibility" in ::AlternateDifficulties))
 						{
 							minr = troop.SortedTypes[i].Types[index].MinR;
 						}
-		
+
 						if (_resources < minr)
 					{
 						::AlternateDifficulties.Mod.Debug.printLog("[AlternateDifficulties][DynamicTroops] excluded MinR troop minR=" + minr + " resources=" + _resources);
 						continue;
 					}
 					}
-		
+
 					local key = troop.SortedTypes[i].Types[index].Type.Script;
 					if (!(key in _map))
 					{
@@ -281,7 +282,7 @@ if (!("Compatibility" in ::AlternateDifficulties))
 							Num = 0
 						}
 					}
-		
+
 					if ("Roll" in troop)
 					{
 						if (typeof(troop.Roll) == "function")
@@ -316,12 +317,12 @@ if (!("Compatibility" in ::AlternateDifficulties))
 							}
 						}
 					}
-		
-		
-		
+
+
+
 					_credits -= troop.SortedTypes[i].Types[index].Cost;
 					_map[key].Num += 1;
-		
+
 					if ("Guards" in troop.SortedTypes[i].Types[index])
 					{
 						_credits = this.Const.World.Common.dynamicSelectTroop(troop.SortedTypes[i].Types[index].Guards, _resources, _scale, _map, _credits)
@@ -334,6 +335,6 @@ if (!("Compatibility" in ::AlternateDifficulties))
 		//	}
 			return _credits
 		}
-		
+
 	}
 };
