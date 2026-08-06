@@ -13,6 +13,7 @@
 - Do not edit `data_001`, `mod_legends`, `mod_reforged`, `mod_witcher`, or any other reference/community mod.
 - The package is `mod_alternate_difficulties`; the final mod ID and display name require user review before source files are created.
 - The mod must require and load after `mod_legends` and `mod_msu`.
+- The mod disregards the campaign combat-difficulty setting for the normal-contract scaling path and uses its own configurable custom multiplier instead.
 - Enemy scaling must never read campaign day, player-party strength, item value, named-item value, or reserve-only brothers.
 - Roster strength considers only brothers who can deploy into the next battle: non-reserve brothers, capped at `World.Assets.getBrothersMaxInCombat()`.
 - Roster strength uses only deployable-brother count and average level.
@@ -29,9 +30,11 @@
 countScore = deployedCount / 6.0
 levelScore = averageLevel / 6.0
 rosterMultiplier = clamp(0.75, 1.40, 0.50 * countScore + 0.50 * levelScore)
+customDifficultyMultiplier = ModSettings.CustomDifficultyMultiplier
+finalEncounterMultiplier = rosterMultiplier * customDifficultyMultiplier
 ```
 
-The 6-brother, average-level-6 roster is the `1.00` baseline. The low clamp protects a new campaign from an excessively small encounter; the high clamp prevents a large, high-level deployment from reaching Legends' existing five-times maximum scaling.
+The 6-brother, average-level-6 roster is the `1.00` roster baseline. `CustomDifficultyMultiplier` defaults to `1.10`, between Legends Normal (`1.00`) and Expert (`1.15`), and is configurable from `0.85` through `2.00` in `0.01` steps. `1.15` is Legends' highest native numeric enemy-budget multiplier. Values above it intentionally increase only this mod's encounter resources; they do not enable the separate Legendary enemy perks, stat changes, poison effects, or AI behavior. The low clamp protects a new campaign from an excessively small encounter; the high clamp prevents a large, high-level deployment from reaching Legends' existing five-times maximum scaling. A changed setting applies to encounters calculated after the change; it does not change an enemy party already spawned on the world map.
 
 ### Fixed contract skull offers
 
@@ -60,6 +63,7 @@ Skulls remain visible before the player accepts a contract. The mod assigns a fi
 
 - [ ] Create the loader with the reviewed mod ID/display name and dependencies `mod_msu` and `mod_legends`.
 - [ ] Create the MSU settings page with a `DebugLogging` Boolean setting whose default is `true`.
+- [ ] Add a General-page range setting named **Custom Enemy Difficulty** with ID `CustomDifficultyMultiplier`, default `1.10`, minimum `0.85`, maximum `2.00`, and step `0.01`. Its tooltip must state: `1.15 is Legends' highest native enemy-budget multiplier (Expert). Higher values increase only this mod's encounter budget; they do not enable Legendary enemy stats, perks, poison effects, or AI. Changes affect newly calculated encounters only; existing enemy parties do not resize.`
 - [ ] Register a debug logger that prefixes every line with `[AlternateDifficulties]` and honours the setting after it changes.
 - [ ] Write the README with the exact formula, the skull table, load-order requirement, excluded inputs, special-contract limitation, logging path, and `modbb` build command.
 - [ ] Replace the short draft in `readme.md` with a link to `README.md` so there is one maintained user-facing source of truth.
@@ -93,15 +97,16 @@ Skulls remain visible before the player accepts a contract. The mod assigns a fi
 
 **Interfaces:**
 - Consumes `::AlternateDifficulties.RosterScaling.getMultiplier()`.
-- Produces a replacement `contracts/contract.getScaledDifficultyMult()` that returns `rosterMultiplier * Const.Difficulty.EnemyMult[combatDifficulty]`.
+- Produces a replacement `contracts/contract.getScaledDifficultyMult()` that returns `rosterMultiplier * ModSettings.CustomDifficultyMultiplier`.
 
-- [ ] Write a static test that asserts the hook targets `contracts/contract`, overrides `getScaledDifficultyMult`, calls `RosterScaling.getMultiplier`, and does not reference `getPlayer().getStrength`, `getValue`, or `World.getTime().Days`.
+- [ ] Write a static test that asserts the hook targets `contracts/contract`, overrides `getScaledDifficultyMult`, calls `RosterScaling.getMultiplier`, reads `CustomDifficultyMultiplier`, and does not reference `getPlayer().getStrength`, item `getValue`, `World.getTime().Days`, or `getCombatDifficulty`.
 - [ ] Run the test and confirm it fails before the hook exists.
-- [ ] Hook `contracts/contract` after Legends has loaded and replace `getScaledDifficultyMult()` with the stated interface.
-- [ ] Log combat difficulty, the roster multiplier, the combat-difficulty multiplier, and their final product once per scaling call.
+- [ ] Hook `contracts/contract` after Legends has loaded and replace `getScaledDifficultyMult()` with the stated interface. Do not call `Const.Difficulty.EnemyMult` or `World.Assets.getCombatDifficulty()` from this replacement.
+- [ ] Log the roster multiplier, the configured custom difficulty multiplier, and their final product once per scaling call.
 - [ ] Run the static test and confirm it passes.
 - [ ] In a disposable save, compare two otherwise identical contracts while changing only stored equipment; verify their logged scaled-difficulty multiplier is unchanged.
 - [ ] In a disposable save, compare the same deployment on two campaign days; verify their logged scaled-difficulty multiplier is unchanged.
+- [ ] In a disposable save, change **Custom Enemy Difficulty** from `1.10` to `1.00`, then to `2.00`, generating a new normal contract after each change. Verify the logged multiplier changes accordingly and confirm an already spawned party keeps its existing composition.
 
 ### Task 4: Remove the dynamic troop selector's day bypass
 
@@ -209,7 +214,7 @@ Skulls remain visible before the player accepts a contract. The mod assigns a fi
 ## Scope Boundaries
 
 - This release changes scaling used by normal contract encounters and Legends dynamic troop selection. It does not rebalance individual enemy stat scripts, legendary hunt contracts, named locations, crisis armies, or non-contract world parties that use separately authored difficulty logic.
-- Combat and economic difficulty settings remain respected through Legends' existing `Const.Difficulty.EnemyMult` and payment/economy multipliers.
+- The custom **Custom Enemy Difficulty** setting replaces the campaign combat-difficulty multiplier only for the normal-contract scaling path owned by this mod. Legends' separate special-contract, arena, location, crisis, and world-party paths remain unchanged until individually patched. Economic difficulty and the normal economy multipliers remain respected.
 - Adding manual skull selection, a UI redesign, or per-enemy stat modifiers is out of scope for this first release.
 
 ## Execution Order
