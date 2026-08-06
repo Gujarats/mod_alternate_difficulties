@@ -6,6 +6,42 @@ if (!("Compatibility" in ::AlternateDifficulties))
 ::AlternateDifficulties.Compatibility.DynamicTroops <- {
 	function register()
 	{
+		// Selects one entry from a Legends dynamic troop list, adds the selected
+		// troop(s) to _map, and returns the credits left after their costs.
+		//
+		// This function is called repeatedly by Legends while it has credits to
+		// spend. An entry can be either a direct unit (`Type`) or a group/choice
+		// (`SortedTypes`). Entries with Weight = 0 are *fixed*: they are always
+		// processed. At most one entry with a non-zero Weight is chosen at random.
+		//
+		// Parameters
+		// - _list:      The spawn-list entries that may be selected this call.
+		// - _resources: The encounter's overall resource budget. It controls
+		//               MinR/MaxR eligibility; it is not reduced here.
+		// - _scale:     A 0..1-ish scaling value passed to dynamic Weight
+		//               functions and used by SortedTypes' point calculation.
+		// - _map:       The accumulating result, keyed by a unit Type.Script.
+		//               Each value has { Type, Num }, where Num is its count.
+		// - _credits:   The remaining purchase budget. It is reduced by chosen
+		//               troop costs and returned to the caller.
+		//
+		// Working variables
+		// - candidates: Eligible entries with a non-zero Weight. One is selected
+		//               with a weighted random roll.
+		// - T:          Entries selected for processing: all fixed entries plus
+		//               the one weighted-random entry, if any.
+		// - totalWeight:The combined weight of candidates, used to make the roll.
+		// - t / troop:  A spawn-list entry. `t` is considered for selection;
+		//               `troop` is then processed after selection.
+		// - minr / w:   The evaluated MinR threshold and Weight respectively;
+		//               either may be supplied as a function by Legends.
+		// - r:          A random roll used to select a candidate or guard.
+		// - key:        The unit script path used as the _map key.
+		//
+		// Alternate Difficulties difference from Legends: MinR is always enforced.
+		// Legends normally lets campaign day eventually bypass MinR; this version
+		// never does, so an under-budget troop cannot be selected just because the
+		// campaign is later.
 		::Const.World.Common.dynamicSelectTroop <- function (_list, _resources, _scale, _map, _credits)
 		{
 			local candidates = [];
@@ -23,8 +59,8 @@ if (!("Compatibility" in ::AlternateDifficulties))
 					continue;
 				}
 		
-				//Don't pick if resources are less than threshold AND we have not surpassed
-				//the given days in game based on Difficulty
+				// Don't pick an entry below its minimum resource threshold. Unlike
+				// Legends' original, campaign day does not bypass this check.
 				if ("MinR" in t)
 				{
 					local minr = 0;
@@ -301,4 +337,3 @@ if (!("Compatibility" in ::AlternateDifficulties))
 		
 	}
 };
-
