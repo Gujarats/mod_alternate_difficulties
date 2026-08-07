@@ -44,6 +44,10 @@ if (!("CombatTelemetry" in ::AlternateDifficulties))
 	}
 
 	local finalMultiplier = _snapshot.rosterMultiplier * _customMultiplier;
+	local shopCost = ::AlternateDifficulties.DifficultyPolicy.getEconomyValue("EconomyShopCostMultiplier");
+	local sellLoot = ::AlternateDifficulties.DifficultyPolicy.getEconomyValue("EconomySellLootMultiplier");
+	local contractPayment = ::AlternateDifficulties.DifficultyPolicy.getEconomyValue("EconomyContractPaymentMultiplier");
+	local recovery = ::AlternateDifficulties.DifficultyPolicy.getEconomyValue("EconomyRecoveryMultiplier");
 	::AlternateDifficulties.Mod.Debug.printLog(
 		"[AlternateDifficulties][Telemetry][Roster] reason=" + _reason
 		+ " brothers=" + brotherCount
@@ -53,8 +57,12 @@ if (!("CombatTelemetry" in ::AlternateDifficulties))
 		+ " rosterMultiplier=" + _snapshot.rosterMultiplier
 		+ " customMultiplier=" + _customMultiplier
 		+ " finalMultiplier=" + finalMultiplier
-		+ " combatDifficulty=" + combatDifficulty
-		+ " economicDifficulty=" + economicDifficulty
+		+ " effectiveCombatDifficulty=" + combatDifficulty
+		+ " effectiveEconomicDifficulty=" + economicDifficulty
+		+ " policyShopCost=" + shopCost
+		+ " policySellLoot=" + sellLoot
+		+ " policyContractPayment=" + contractPayment
+		+ " policyRecovery=" + recovery
 	);
 }
 
@@ -65,6 +73,7 @@ if (!("CombatTelemetry" in ::AlternateDifficulties))
 		"[AlternateDifficulties][Telemetry][Contract] type=" + _contract.getType()
 		+ " skullMultiplier=" + _contract.m.DifficultyMult
 		+ " skullPaymentMultiplier=" + paymentMultiplier
+		+ " economyPaymentMultiplier=" + ::AlternateDifficulties.DifficultyPolicy.getEconomyValue("EconomyContractPaymentMultiplier")
 	);
 }
 

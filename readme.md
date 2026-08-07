@@ -1,6 +1,6 @@
 # Alternate Difficulties
 
-An MSU and Legends compatibility mod for readable, roster-based encounter scaling.
+An MSU and Legends compatibility mod for readable, roster-based encounter scaling and configurable economy pressure.
 
 ## Requirements and load order
 
@@ -28,6 +28,29 @@ Six deployable level-6 brothers are the roster baseline of `1.00`.
 The **Custom Enemy Difficulty** setting is available in Mod Settings during a campaign. It defaults to `1.10` and ranges from `0.85 to 2.00` in `0.01` steps.
 
 `1.15` is Legends' highest native numeric enemy-budget multiplier (Expert). Values above `1.15` increase only this mod's encounter budget. They do not enable Legends' separate Legendary enemy perks, stat changes, poison effects, or AI behavior. A changed value affects newly calculated encounters; an enemy party already spawned on the world map does not resize.
+
+The new-campaign **Combat Difficulty** and **Economy Difficulty** choices are
+ignored for new campaigns and existing saves. The game receives its safe Normal
+index while this mod provides the actual combat and economy values.
+
+## Economy Overrides
+
+The **Economy Overrides** page provides independent, live-adjustable values:
+
+| Setting | Default | Effect |
+| --- | ---: | --- |
+| Shop Cost Multiplier | 1.09 | Shop purchase and service costs |
+| Sell and Loot Value Multiplier | 0.925 | Item and valuable sale value |
+| Contract Payment Multiplier | 0.90 | Normal contract payment after skull and barter factors |
+| Minimum Contract Payment / Per-head Payment | 10 / 1 | Legends contract payment floors |
+| Healing and Repair Speed Multiplier | 0.275 | Natural/camp healing and repair speed |
+| Ammo / Medicine / Tools Capacity | 75 / 38 / 38 | Base carried-resource caps |
+| Stash Capacity | 21 | Base stash slots before origin, brother, follower, hand-cart, and wagon bonuses |
+
+Lowering an ammo, medicine, tools, or stash option never deletes owned assets.
+Resource caps take effect once the current amount falls below the new cap. A
+stash reduction waits until enough slots are free, then applies automatically.
+Changing a setting cannot resize an existing world party or tactical enemy.
 
 ## Contract skulls
 
@@ -102,8 +125,14 @@ verified in-game:
 - [ ] Repeat that contract test with a different combat-difficulty option. The
   enemy-scaling multiplier must remain `roster multiplier × Custom Enemy
   Difficulty`.
-- [ ] Change only economy difficulty and confirm contract payment changes while
-  the enemy-scaling multiplier remains unchanged.
+- [ ] Load campaigns made with opposite Combat/Economy menu selections. Both
+  must log `normalized existing save` with effective Normal values.
+- [ ] Change an Economy Overrides setting in an existing campaign, then check
+  a shop, sell value, normal contract payment, and healing/repair tick.
+- [ ] Spawn a new patrol or roamer and confirm its log has
+  `[FactionActionScaling]` with roster and custom multiplier values.
+- [ ] Lower a resource or stash capacity below the current amount. Confirm the
+  log reports a safe deferred stash reduction and no assets are deleted.
 
 ## Build
 

@@ -10,6 +10,12 @@ Alternate Difficulties requires MSU and Legends, and its loader queues after
 - `config/world_entity_common.nut`: the mod replaces `dynamicSelectTroop()`
   with the same selection algorithm, except that an under-budget `MinR` troop
   is never unlocked by campaign day.
+- `states/world/asset_manager`: the mod normalizes Combat/Economy Difficulty
+  for new campaigns and loaded saves, then supplies its own Normal-slot policy
+  values for standard getter-based callers.
+- `factions/faction_action`: generic world-party budget helpers use deployed
+  roster scaling and Custom Enemy Difficulty rather than player strength,
+  campaign day, or Combat Difficulty.
 - `World.Assets.getBrothersMaxInCombat()` and `World.getPlayerRoster().getAll()`:
   only the non-reserve brothers eligible for deployment are sampled.
 - Normal contract `create()`: reviewed normal types receive their fixed visible
@@ -55,8 +61,9 @@ is why it is limited to the five documented test contract types.
 
 ## Inputs intentionally excluded
 
-The normal-contract replacement does not read campaign day, `getStrength()`,
-item value, named-item value, stored equipment, or the campaign combat-
-difficulty option. The deployed-roster formula uses only deployable count and
-average brother level. Other Legends systems, including separately authored
-world parties and day-based champion logic, remain outside this mod's scope.
+The normal-contract and generic faction-action replacements do not read
+campaign day, `getStrength()`, item value, named-item value, stored equipment,
+or the campaign Combat Difficulty option. The deployed-roster formula uses
+only deployable count and average brother level. Separately authored event
+encounters and day-based champion logic remain outside the roster-budget scope,
+but their Combat/Economy menu reads receive the safe Normal policy index.

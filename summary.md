@@ -1,5 +1,23 @@
 # Alternate Difficulties: Scaling Summary
 
+## Game-menu difficulty options
+
+Both the game-menu Combat Difficulty and Economy Difficulty choices are ignored
+in new campaigns and existing saves. The asset-manager policy normalizes the
+engine-facing values to Normal because the game expects a discrete difficulty
+index, then places Alternate Difficulties' configurable values into that Normal
+slot. This is an adapter only: the actual values come from the mod's Custom
+Enemy Difficulty and Economy Overrides settings.
+
+Generic faction-action patrols, roamers, ambushers, caravans, and armies now
+use deployed roster count/level and Custom Enemy Difficulty for their resource
+budget. Existing world parties and tactical enemies are not resized.
+
+Economy Overrides are live-adjustable in the current campaign. The defaults are
+shop cost `1.09`, sell/loot `0.925`, contract payment `0.90`, minimum payments
+`10/1`, recovery `0.275`, ammo/medicine/tools `75/38/38`, and base stash `21`.
+Lower capacity settings never delete owned resources or items.
+
 ## Day-based enemy scaling removed by this mod
 
 `DynamicTroops.register()` replaces Legends' `Const.World.Common.dynamicSelectTroop`.
