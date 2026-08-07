@@ -147,6 +147,7 @@ if (!("DeveloperTestLab" in ::AlternateDifficulties))
 // campaign. Battle Brothers does not expose a way for a mod to replay every
 // skipped daily world update, so wages, healing, events, and similar systems
 // are not processed once per jumped day.
+// NOTES : DOES NOT WORK!!!!
 ::AlternateDifficulties.DeveloperTestLab.advanceCampaignDays <- function()
 {
 	if (!::AlternateDifficulties.DeveloperTestLab.isEnabled())
@@ -155,7 +156,7 @@ if (!("DeveloperTestLab" in ::AlternateDifficulties))
 		return;
 	}
 
-	if (::World == null || ::World.State == null || ("Tactical" in getroottable() && ::Tactical.State != null))
+	if (::World == null || ::World.State == null || ("Tactical" in getroottable() && "State" in ::Tactical && ::Tactical.State != null))
 	{
 		::AlternateDifficulties.DeveloperTestLab.logWarning("Advance campaign days requires the world map outside tactical combat.");
 		return;
