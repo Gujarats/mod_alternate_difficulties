@@ -13,16 +13,17 @@ defaults to 100 and accepts values from 1 through 365. Its **Advance Campaign
 Days** button does nothing unless the Test Lab is enabled, a world campaign is
 loaded, and tactical combat is not active.
 
-The action advances time through the game's normal campaign-time pathway, one
-day at a time. It does not directly assign `World.getTime().Days`. Therefore,
-the game retains its daily processing, including wages, healing, settlement
-updates, contracts, events, and other Legends systems that depend on campaign
-time.
+The action advances the engine's virtual campaign-time counter by the selected
+number of full days. It does not directly assign `World.getTime().Days`, which
+is a derived value. Battle Brothers does not expose a mod-callable routine for
+processing one complete normal campaign day, so this is intentionally a
+test-only calendar jump: it does not replay wages, healing, settlement
+updates, contracts, events, or other daily systems once per skipped day.
 
 Before and after advancing, the Test Lab writes a single diagnostic entry with
 the starting day, requested amount, and final day. The button description warns
-that the action permanently changes the disposable campaign and applies normal
-daily effects.
+that the action permanently changes the disposable campaign and skips ordinary
+per-day processing for the skipped period.
 
 ## Safer isolated test
 
@@ -39,6 +40,6 @@ not needed to validate the `dynamicSelectTroop` day-bypass removal.
 
 The button logs a warning and makes no changes when disabled, outside a world
 campaign, or during tactical combat. Source checks will verify the setting,
-guard clauses, native progression call, and start/end diagnostic line. A live
+guard clauses, virtual-time increment, and start/end diagnostic line. A live
 test will confirm the day increases by the configured amount and that the log
 records the same values.
