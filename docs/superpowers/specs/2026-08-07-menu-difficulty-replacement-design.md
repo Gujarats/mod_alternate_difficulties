@@ -3,21 +3,22 @@
 ## Goal
 
 Make the new-campaign **Combat Difficulty** and **Economy Difficulty** menu
-choices have no gameplay effect in an Alternate Difficulties campaign. Enemy
-budgets use the mod's roster/custom-combat model; economy behavior uses
-explicit Alternate Difficulties settings.
-
-This design applies to new campaigns. The campaign's internally stored combat
-and economy difficulty values are normalized to Normal when it is created.
+choices have no gameplay effect in an Alternate Difficulties campaign, whether
+the mod is added to a new campaign or an existing save. Enemy budgets use the
+mod's roster/custom-combat model; economy behavior uses explicit Alternate
+Difficulties settings.
 
 ## Scope
 
 ### Menu-difficulty normalization
 
 Add an asset-manager compatibility hook, loaded after Legends, that normalizes
-both campaign difficulty fields to `Const.Difficulty.Normal` before the
-vanilla/Legends campaign setup consumes them. The hook also returns Normal from
-all three public accessors:
+both campaign difficulty fields to `Const.Difficulty.Normal` in both paths:
+
+- before vanilla/Legends consumes new-campaign settings; and
+- immediately after an existing save deserializes its asset manager.
+
+The hook also returns Normal from all three public accessors:
 
 - `getCombatDifficulty()`
 - `getEconomicDifficulty()`
@@ -26,7 +27,7 @@ all three public accessors:
 This covers all vanilla, Legends, and compatible-mod callers that use these
 accessors. It also covers the small number of raw `m.CombatDifficulty` and
 `m.EconomicDifficulty` callers, because the stored fields themselves are
-normalized at campaign creation.
+normalized at campaign creation and after every existing-save load.
 
 The mod does not edit vanilla, Legends, or third-party-mod files. The original
 choices remain irrelevant instead of being reinterpreted as Alternate
@@ -117,17 +118,26 @@ hooks.
 
 The user settings are absolute values, not derived from the selected menu
 difficulty or from the enemy slider. Their changes are applied immediately to
-future price/payment calculations and subsequent healing/repair ticks.
+the loaded campaign: future price/payment calculations and subsequent
+healing/repair ticks use the new value without requiring a reload.
 
 ### Safe live capacity changes
 
 Changing a resource cap never deletes ammo, medicine, or tools already held.
 The new cap is enforced on later additions and refill/repair operations.
 
-Increasing the stash cap applies immediately. Decreasing it is deferred while
-the stash contains more entries than the requested cap; the mod logs the
-requested and effective caps and applies the reduction once it can do so
-without losing an item.
+The configured stash capacity is a base cap. Existing origin bonuses, party
+stash modifiers, and purchased cart/wagon upgrades remain additive and are
+not removed by an option change. Increasing the resulting effective stash cap
+applies immediately. Decreasing it is deferred while the stash contains more
+entries than the requested effective cap; the mod logs the requested and
+effective caps and applies the reduction once it can do so without losing an
+item.
+
+No setting change retroactively resizes an existing world party, modifies
+enemies already placed in tactical combat, or recalculates a payment that has
+already been paid. Newly spawned parties, unfinalized contract calculations,
+and all later economy interactions use the current settings.
 
 ### Diagnostics and documentation
 
@@ -145,21 +155,25 @@ scaling from economy overrides, and document the safe capacity behavior.
 ## Verification
 
 1. Start two disposable new campaigns with opposite game-menu combat/economy
-   selections. Confirm the initialization logs report the same normalized
-   values and active Alternate Difficulties values.
-2. Generate equivalent normal contracts and faction-action patrols/roamers.
+   selections, and load two existing saves made with opposite selections.
+   Confirm the initialization/load logs report the same normalized values and
+   active Alternate Difficulties values.
+2. Change Economy Overrides during an existing campaign, without reloading,
+   then confirm future shop, sell/loot, contract-payment, and recovery
+   calculations use the new values.
+3. Generate equivalent normal contracts and faction-action patrols/roamers.
    Confirm their budget logs use roster/custom combat values, not selected
    menu difficulty, player strength, equipment, or campaign day.
-3. Change each economy setting and verify its corresponding shop, sell/loot,
+4. Change each economy setting and verify its corresponding shop, sell/loot,
    contract payment, heal/repair, or capacity result changes immediately.
-4. Confirm a payment floor uses the configured minimum values.
-5. Lower each resource cap below the current resource amount and confirm no
+5. Confirm a payment floor uses the configured minimum values.
+6. Lower each resource cap below the current resource amount and confirm no
    resource is deleted; further additions do not exceed the cap after the
    amount falls below it.
-6. Attempt to lower the stash capacity below its occupied size. Confirm items
+7. Attempt to lower the stash capacity below its occupied size. Confirm items
    are retained, the log reports a deferred reduction, and the capacity lowers
    only after enough space is free.
-7. Run the existing dynamic-troop and contract-skull checks to confirm the
+8. Run the existing dynamic-troop and contract-skull checks to confirm the
    new policy does not alter their intended behavior.
 
 ## Non-goals
