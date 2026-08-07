@@ -84,6 +84,27 @@ For scaling diagnosis, search for these labels:
 - `[Telemetry][Type]` and `[Telemetry][Actor]`: enemy/allied type totals and
   one detailed record per non-player actor.
 
+## Verification TODO
+
+The following work remains before the mod's complete behavior can be claimed as
+verified in-game:
+
+- [ ] Remove or disable the Test Lab **Advance Campaign Days** action. Its
+  current virtual-time change does not advance `World.getTime().Days`, so it is
+  not a valid calendar test.
+- [ ] Test the `MinR` day-bypass patch without changing the campaign day: set
+  Legends' **Dynamic Day To Skip** to `1`, then generate encounters on day 2 or
+  later. Under-budget `MinR` troops must still be logged as excluded.
+- [ ] Move combat telemetry to a post-spawn point, so its player/allied/enemy
+  totals and actor details match the actual tactical encounter.
+- [ ] Generate and accept a supported normal Test Lab contract, then confirm
+  its log records the roster-based contract multiplier.
+- [ ] Repeat that contract test with a different combat-difficulty option. The
+  enemy-scaling multiplier must remain `roster multiplier × Custom Enemy
+  Difficulty`.
+- [ ] Change only economy difficulty and confirm contract payment changes while
+  the enemy-scaling multiplier remains unchanged.
+
 ## Build
 
 From the `mod_alternate_difficulties` directory, build with `modbb`. This
