@@ -47,6 +47,7 @@ if (!("DifficultyPolicy" in ::AlternateDifficulties))
 {
 	if (!("World" in getroottable())
 		|| ::World == null
+		|| !("Assets" in ::World)
 		|| ::World.Assets == null
 		|| ::World.Assets.getOrigin() == null)
 	{
@@ -107,6 +108,7 @@ if (!("DifficultyPolicy" in ::AlternateDifficulties))
 {
 	if (!("World" in getroottable())
 		|| ::World == null
+		|| !("Assets" in ::World)
 		|| ::World.Assets == null
 		|| ::World.getPlayerRoster() == null
 		|| !("Legends" in getroottable())
