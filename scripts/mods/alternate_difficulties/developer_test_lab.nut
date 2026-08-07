@@ -143,6 +143,38 @@ if (!("DeveloperTestLab" in ::AlternateDifficulties))
 	);
 }
 
+// This intentionally changes only the calendar value for a disposable test
+// campaign. Battle Brothers does not expose a way for a mod to replay every
+// skipped daily world update, so wages, healing, events, and similar systems
+// are not processed once per jumped day.
+::AlternateDifficulties.DeveloperTestLab.advanceCampaignDays <- function()
+{
+	if (!::AlternateDifficulties.DeveloperTestLab.isEnabled())
+	{
+		::AlternateDifficulties.DeveloperTestLab.logWarning("Advance campaign days ignored because the Test Lab is disabled.");
+		return;
+	}
+
+	if (::World == null || ::World.State == null || ("Tactical" in getroottable() && ::Tactical.State != null))
+	{
+		::AlternateDifficulties.DeveloperTestLab.logWarning("Advance campaign days requires the world map outside tactical combat.");
+		return;
+	}
+
+	local days = ::AlternateDifficulties.Mod.ModSettings.getSetting("TestDaysToAdvance").getValue();
+	local startingDay = ::World.getTime().Days;
+	::Time.setVirtualTime(::Time.getVirtualTimeF() + days * ::World.getTime().SecondsPerDay);
+	::World.State.updateDayTime();
+	local finalDay = ::World.getTime().Days;
+
+	::AlternateDifficulties.Mod.Debug.printLog(
+		"[AlternateDifficulties][TestLab] advanced campaign days startingDay=" + startingDay
+		+ " requestedDays=" + days
+		+ " finalDay=" + finalDay
+		+ " (calendar jump; daily processing was not replayed)"
+	);
+}
+
 ::AlternateDifficulties.DeveloperTestLab.generateSelectedNormalContract <- function()
 {
 	if (!::AlternateDifficulties.DeveloperTestLab.isEnabled())
