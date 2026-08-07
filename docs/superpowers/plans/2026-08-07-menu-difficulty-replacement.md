@@ -255,7 +255,7 @@ Commit: `git add scripts/mods/alternate_difficulties/compatibility/faction_actio
 - Test: inline PowerShell source assertions and `git diff --check`
 
 **Interfaces:**
-- Contract payment uses `Const.Difficulty.PaymentMult[Const.Difficulty.Normal]` once, in addition to its existing skull/barter terms.
+- Contract payment uses `Const.Difficulty.PaymentMult[Const.Difficulty.Normal]` exactly once through the standard reputation-payment helper, in addition to its existing skull/barter terms.
 - Telemetry reports normalized difficulty and policy values.
 
 - [ ] **Step 1: Establish the failing seam**
@@ -266,10 +266,12 @@ Expected: the command completes before docs are updated.
 
 - [ ] **Step 2: Apply configured contract payment**
 
-Keep the fixed skull payment table and roster/custom combat calculation.
-Multiply normal-contract payment once by
-`Const.Difficulty.PaymentMult[Const.Difficulty.Normal]`. Do not read the raw
-asset `ContractPaymentMult` as the override and do not change skull values.
+Keep the fixed skull payment table and roster/custom combat calculation. The
+standard reputation-payment helper reads
+`Const.Difficulty.PaymentMult[getEconomicDifficulty()]`; the asset-manager
+override makes that index Normal, so the configured value is applied exactly
+once. Do not additionally multiply it in `getPaymentMult`, do not read raw
+asset `ContractPaymentMult` as the override, and do not change skull values.
 
 - [ ] **Step 3: Extend logs and docs**
 
@@ -281,7 +283,7 @@ actions while retaining the authored special-contract boundary.
 
 - [ ] **Step 4: Verify and commit**
 
-Run: `$r = Get-Content -Raw 'readme.md'; @('Economy Overrides','1.09','0.925','0.90','0.275','existing saves','never deletes') | % { if (-not $r.Contains($_)) { throw "README missing $_" } }; $c = Get-Content -Raw 'scripts/mods/alternate_difficulties/compatibility/legends_contract_patch.nut'; if (-not $c.Contains('Const.Difficulty.PaymentMult')) { throw 'Missing payment policy' }; git diff --check`
+Run: `$r = Get-Content -Raw 'readme.md'; @('Economy Overrides','1.09','0.925','0.90','0.275','existing saves','never deletes') | % { if (-not $r.Contains($_)) { throw "README missing $_" } }; $p = Get-Content -Raw 'scripts/mods/alternate_difficulties/difficulty_policy.nut'; if (-not $p.Contains('PaymentMult[normal] = contractPayment')) { throw 'Missing payment policy' }; $c = Get-Content -Raw 'scripts/mods/alternate_difficulties/compatibility/legends_contract_patch.nut'; if ($c.Contains('economyPaymentMultiplier')) { throw 'Payment policy would be applied twice' }; git diff --check`
 
 Expected: PASS.
 
