@@ -41,6 +41,11 @@ if (!("Settings" in ::AlternateDifficulties))
 		"Test crowns amount",
 		"Exact crowns granted by the explicit Grant Crowns button."
 	);
+	developerLab.addRangeSetting(
+		"TestDaysToAdvance", 100, 1, 365, 1,
+		"Test days to advance",
+		"Calendar days added by the explicit button. This test-only jump does not replay wages, healing, events, contracts, or other daily processing for every skipped day."
+	);
 	developerLab.addEnumSetting(
 		"TestContractType", "Drive Off Brigands",
 		["Drive Off Brigands", "Investigate Cemetery", "Hunt Webknechts", "Hunt Unholds", "Drive Off Nomads"],
@@ -75,6 +80,14 @@ if (!("Settings" in ::AlternateDifficulties))
 	).addCallback(function(_data = null)
 	{
 		::AlternateDifficulties.DeveloperTestLab.grantCrowns();
+	});
+	developerLab.addButtonSetting(
+		"AdvanceTestCampaignDays", null,
+		"Advance Campaign Days",
+		"Explicit action: permanently advances the disposable campaign calendar by Test days to advance. It only works outside tactical combat and skips ordinary per-day processing for the skipped period."
+	).addCallback(function(_data = null)
+	{
+		::AlternateDifficulties.DeveloperTestLab.advanceCampaignDays();
 	});
 	developerLab.addButtonSetting(
 		"GenerateSelectedTestContract", null,
