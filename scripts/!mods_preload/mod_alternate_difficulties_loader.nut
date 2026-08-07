@@ -12,6 +12,7 @@
 ::AlternateDifficulties.HookMod.require("mod_msu >= 1.9.0");
 
 ::include("scripts/mods/alternate_difficulties/settings");
+::include("scripts/mods/alternate_difficulties/difficulty_policy");
 ::include("scripts/mods/alternate_difficulties/deployed_roster_scaling");
 ::include("scripts/mods/alternate_difficulties/contract_skull_offers");
 ::include("scripts/mods/alternate_difficulties/combat_telemetry");
