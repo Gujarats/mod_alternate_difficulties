@@ -128,10 +128,21 @@ save, entering a settlement, or changing a setting.
   `arming_sword`, `flail`, and `billhook`. It never equips or removes items,
   and refuses a partial grant when there is insufficient stash space.
 - **Grant Crowns** adds the selected amount exactly once for a button press.
+- **Advance Campaign Days** moves the campaign calendar by the configured
+  amount for a disposable test save. It does not replay one normal daily update
+  per skipped day, so it skips the ordinary wages, healing, events, contracts,
+  and other daily processing for that period.
 - **Generate Selected Normal Contract** invokes the game’s own normal faction
   action, so it cannot fabricate arena, crisis, legendary-hunt, or boss
   contracts. It keeps all existing offers and changes only the created offer’s
   skull before it is displayed.
+
+For this mod's `MinR` day-bypass test, set Legends' **Dynamic Day To Skip** to
+`1` and test on day 2. This is safer because it changes only the condition
+under test: Alternate Difficulties must still log every under-budget `MinR`
+troop as excluded. A calendar jump is useful for broader compatibility tests,
+but it changes unrelated day-based Legends systems and is not needed to verify
+this mod's dynamic-troop patch.
 
 See `README.md` for the user instructions and `docs/compatibility.md` for the
 normal-contract allow-list and exclusions.
