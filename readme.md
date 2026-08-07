@@ -73,6 +73,17 @@ Debug logging is enabled by default and can be changed in Mod Settings. Logs are
 
 `C:\Users\gujar\Documents\Battle Brothers\log.html`
 
+For scaling diagnosis, search for these labels:
+
+- `[Telemetry][Brother]` and `[Telemetry][Roster]`: every brother, reserve
+  status, deployed count, average level, and all multiplier inputs.
+- `[Telemetry][Contract]`: contract type, skull multiplier, and skull payment
+  multiplier.
+- `[Telemetry][Combat]`: actual player, allied, enemy, and neutral actor totals
+  after a battle has spawned.
+- `[Telemetry][Type]` and `[Telemetry][Actor]`: enemy/allied type totals and
+  one detailed record per non-player actor.
+
 ## Build
 
 From the `mod_alternate_difficulties` directory, build with `modbb`. This

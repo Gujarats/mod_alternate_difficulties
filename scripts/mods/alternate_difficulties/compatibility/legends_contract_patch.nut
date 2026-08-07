@@ -21,6 +21,10 @@ if (!("Compatibility" in ::AlternateDifficulties))
 					.getSetting("CustomDifficultyMultiplier")
 					.getValue();
 				local finalMultiplier = snapshot.rosterMultiplier * customDifficultyMultiplier;
+				::AlternateDifficulties.CombatTelemetry.logRoster(
+					"contract-scaling", snapshot, customDifficultyMultiplier
+				);
+				::AlternateDifficulties.CombatTelemetry.logContract(this);
 
 				::AlternateDifficulties.Mod.Debug.printLog(
 					"[AlternateDifficulties][ContractScaling] deployed=" + snapshot.deployedCount
