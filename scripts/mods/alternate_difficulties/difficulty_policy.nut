@@ -89,6 +89,7 @@ if (!("DifficultyPolicy" in ::AlternateDifficulties))
 
 	::AlternateDifficulties.Mod.Debug.printLog(
 		"[AlternateDifficulties][EconomyPolicy] reason=" + _reason
+		+ " customCombatMultiplier=" + this.getCombatMultiplier()
 		+ " shopCost=" + shopCost
 		+ " sellLoot=" + sellLoot
 		+ " contractPayment=" + contractPayment

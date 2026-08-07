@@ -40,11 +40,8 @@ if (!("Compatibility" in ::AlternateDifficulties))
 				local repDiffMult = this.Math.pow(this.getScaledDifficultyMult(), 0.5);
 				local broMult = this.World.State.getPlayer().getBarterMult();
 				local paymentMultiplier = ::AlternateDifficulties.ContractOffers.getPaymentMultiplier(this.m.DifficultyMult);
-				local economyPaymentMultiplier = this.Const.Difficulty.PaymentMult[this.Const.Difficulty.Normal];
-
 				return (this.m.PaymentMult + broMult)
 					* (paymentMultiplier * repDiffMult)
-					* economyPaymentMultiplier
 					* this.World.Assets.m.ContractPaymentMult;
 			}
 		});

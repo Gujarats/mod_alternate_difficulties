@@ -8,6 +8,23 @@ if (!("Compatibility" in ::AlternateDifficulties))
 	{
 		_mod.hook("scripts/states/world/asset_manager", function(q)
 		{
+			// Keep supplies already held when an existing campaign lowers a capacity.
+			// The configured capacity becomes active again after the player spends below it.
+			q.getMaxAmmo = @(__original) function()
+			{
+				return this.Math.max(__original(), this.m.Ammo);
+			}
+
+			q.getMaxArmorParts = @(__original) function()
+			{
+				return this.Math.max(__original(), this.m.ArmorParts);
+			}
+
+			q.getMaxMedicine = @(__original) function()
+			{
+				return this.Math.max(__original(), this.m.Medicine);
+			}
+
 			q.setCampaignSettings = @(__original) function( _settings )
 			{
 				local selectedCombatDifficulty = _settings.Difficulty;
