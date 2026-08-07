@@ -18,6 +18,7 @@
 ::include("scripts/mods/alternate_difficulties/combat_telemetry");
 ::include("scripts/mods/alternate_difficulties/developer_test_lab");
 ::include("scripts/mods/alternate_difficulties/compatibility/asset_manager_patch");
+::include("scripts/mods/alternate_difficulties/compatibility/faction_action_patch");
 ::include("scripts/mods/alternate_difficulties/compatibility/legends_contract_patch");
 ::include("scripts/mods/alternate_difficulties/compatibility/legends_dynamic_troop_patch");
 
@@ -31,6 +32,7 @@
 
 	::AlternateDifficulties.Settings.register();
 	::AlternateDifficulties.Compatibility.AssetManager.registerHooks(::AlternateDifficulties.HookMod);
+	::AlternateDifficulties.Compatibility.FactionAction.registerHooks(::AlternateDifficulties.HookMod);
 	::AlternateDifficulties.DifficultyPolicy.applyEconomyOverrides("mod-initialization");
 	::AlternateDifficulties.Compatibility.LegendsContract.registerHooks(::AlternateDifficulties.HookMod);
 	::AlternateDifficulties.CombatTelemetry.registerHooks(::AlternateDifficulties.HookMod);
