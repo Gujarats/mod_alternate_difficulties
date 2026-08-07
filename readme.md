@@ -107,6 +107,29 @@ For scaling diagnosis, search for these labels:
 - `[Telemetry][Type]` and `[Telemetry][Actor]`: enemy/allied type totals and
   one detailed record per non-player actor.
 
+## Live Override Verification
+
+Use two existing saves that were created with different Combat/Economy menu
+choices. Load each save with this mod enabled and search `log.html` for
+`[DifficultyPolicy] normalized existing save`; both must report effective `1`
+(Normal), regardless of the saved menu choices.
+
+Then, in either loaded campaign:
+
+1. Change one **Economy Overrides** value and reopen a shop or inspect a sell
+   value; the changed value applies without a reload.
+2. Create or complete a normal contract and verify its payment log includes
+   `economyPaymentMultiplier`.
+3. Let an hour pass or use camp recovery, then verify the changed
+   healing/repair rate.
+4. Lower a resource cap below the current amount and spend resources. Nothing
+   is deleted; refilling stops at the new cap after the amount falls below it.
+5. Lower the stash base below the occupied size. Search for `deferred stash
+   reduction`; remove items until the requested capacity can apply.
+6. Find or wait for a newly spawned patrol/roamer. Search for
+   `[FactionActionScaling]`; it must report roster/custom inputs rather than a
+   Combat Difficulty menu multiplier.
+
 ## Verification TODO
 
 The following work remains before the mod's complete behavior can be claimed as
