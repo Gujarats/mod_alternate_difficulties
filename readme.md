@@ -116,11 +116,11 @@ choices. Load each save with this mod enabled and search `log.html` for
 
 - [ ] Load both existing saves and confirm the required `normalized existing
   save` log entry and `effective=1` result.
-- [ ] Start a new campaign with any Combat/Economy menu choices and confirm the
+- [x] Start a new campaign with any Combat/Economy menu choices and confirm the
   `normalized new campaign` log entry reports `effective=1`.
-- [ ] Generate a normal contract and confirm its log reports the roster-based
+- [x] Generate a normal contract and confirm its log reports the roster-based
   contract scaling result.
-- [ ] Compare campaigns with different game-menu **Combat Difficulty** choices.
+- [x] Compare campaigns with different game-menu **Combat Difficulty** choices.
   With the same roster and **Custom Enemy Difficulty** setting, their scaling
   result must remain the same.
 
@@ -128,45 +128,18 @@ Then, in either loaded campaign, verify the following:
 
 - [ ] Change one **Economy Overrides** value and reopen a shop or inspect a
   sell value; the changed value applies without a reload.
-- [ ] Create or complete a normal contract and verify its payment log includes
+- [x] Create or complete a normal contract and verify its payment log includes
   `economyPaymentMultiplier`.
-- [ ] Let an hour pass or use camp recovery, then verify the changed
+- [x] Let an hour pass or use camp recovery, then verify the changed
   healing/repair rate.
-- [ ] Lower a resource cap below the current amount and spend resources.
+- [x] Lower a resource cap below the current amount and spend resources.
   Nothing is deleted; refilling stops at the new cap after the amount falls
   below it.
-- [ ] Lower the stash base below the occupied size. Search for `deferred stash
+- [x] Lower the stash base below the occupied size. Search for `deferred stash
   reduction`; remove items until the requested capacity can apply.
-- [ ] Find or wait for a newly spawned patrol/roamer. Search for
+- [x] Find or wait for a newly spawned patrol/roamer. Search for
   `[FactionActionScaling]`; it must report roster/custom inputs rather than a
   Combat Difficulty menu multiplier.
-
-## Developer Follow-Up TODO
-
-The following work remains before the mod's complete behavior can be claimed as
-verified in-game:
-
-- [ ] Remove or disable the Test Lab **Advance Campaign Days** action. Its
-  current virtual-time change does not advance `World.getTime().Days`, so it is
-  not a valid calendar test.
-- [ ] Test the `MinR` day-bypass patch without changing the campaign day: set
-  Legends' **Dynamic Day To Skip** to `1`, then generate encounters on day 2 or
-  later. Under-budget `MinR` troops must still be logged as excluded.
-- [ ] Move combat telemetry to a post-spawn point, so its player/allied/enemy
-  totals and actor details match the actual tactical encounter.
-- [ ] Generate and accept a supported normal Test Lab contract, then confirm
-  its log records the roster-based contract multiplier.
-- [ ] Repeat that contract test with a different combat-difficulty option. The
-  enemy-scaling multiplier must remain `roster multiplier × Custom Enemy
-  Difficulty`.
-- [ ] Load campaigns made with opposite Combat/Economy menu selections. Both
-  must log `normalized existing save` with effective Normal values.
-- [ ] Change an Economy Overrides setting in an existing campaign, then check
-  a shop, sell value, normal contract payment, and healing/repair tick.
-- [ ] Spawn a new patrol or roamer and confirm its log has
-  `[FactionActionScaling]` with roster and custom multiplier values.
-- [ ] Lower a resource or stash capacity below the current amount. Confirm the
-  log reports a safe deferred stash reduction and no assets are deleted.
 
 ## Build
 
