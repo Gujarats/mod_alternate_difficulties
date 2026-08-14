@@ -3,6 +3,11 @@ if (!("ContractOffers" in ::AlternateDifficulties))
 	::AlternateDifficulties.ContractOffers <- {};
 }
 
+// Custom contract-skull offer tiers; these are not vanilla or Legends values.
+// Array position is the displayed skull count: index 0 = 1 skull through index 3 = 4 skulls.
+// DifficultyMult is written to contract.m.DifficultyMult and affects its enemy-resource budget.
+// PaymentMultiplier is the matching reward factor applied by getPaymentMultiplier().
+// The separate MSU "Custom Enemy Difficulty" slider remains a global roster-scaling factor.
 ::AlternateDifficulties.ContractOffers.Offers <- [
 	{ DifficultyMult = 0.85, PaymentMultiplier = 0.85 },
 	{ DifficultyMult = 1.00, PaymentMultiplier = 1.00 },

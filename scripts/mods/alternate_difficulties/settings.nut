@@ -108,7 +108,7 @@ if (!("Settings" in ::AlternateDifficulties))
 	});
 
 	local debugLogging = developer.addBooleanSetting(
-		"DebugLogging", true,
+		"DebugLogging", false,
 		"Debug Logging",
 		"Write Alternate Difficulties diagnostic lines to log.html."
 	);
