@@ -1,7 +1,7 @@
 ::AlternateDifficulties <- {
 	ID = "mod_alternate_difficulties",
 	Name = "Alternate Difficulties",
-	Version = "0.1.0"
+	Version = "0.1.1"
 };
 
 ::AlternateDifficulties.HookMod <- ::Hooks.register(
