@@ -7,7 +7,6 @@ if (!("Settings" in ::AlternateDifficulties))
 {
 	local general = ::AlternateDifficulties.Mod.ModSettings.addPage("General");
 	local economy = ::AlternateDifficulties.Mod.ModSettings.addPage("Economy Overrides");
-	local developer = ::AlternateDifficulties.Mod.ModSettings.addPage("Developer Options");
 	local developerLab = ::AlternateDifficulties.Mod.ModSettings.addPage("Developer Test Lab");
 
 	general.addRangeSetting(
@@ -107,10 +106,10 @@ if (!("Settings" in ::AlternateDifficulties))
 		::AlternateDifficulties.DifficultyPolicy.applyEconomyOverrides("setting-change");
 	});
 
-	local debugLogging = developer.addBooleanSetting(
+	local debugLogging = general.addBooleanSetting(
 		"DebugLogging", false,
 		"Debug Logging",
-		"Write Alternate Difficulties diagnostic lines to log.html."
+		"Write Alternate Difficulties diagnostic lines to log.html."q
 	);
 
 	debugLogging.addCallback(function(_data = null)
@@ -200,6 +199,13 @@ if (!("Settings" in ::AlternateDifficulties))
 
 ::AlternateDifficulties.Settings.configureDebugLogging <- function()
 {
+	if ("GuzBluezDebugLogController" in getroottable()
+		&& "registerTarget" in ::GuzBluezDebugLogController)
+	{
+		::GuzBluezDebugLogController.registerTarget(::AlternateDifficulties.ID, ::AlternateDifficulties.Mod);
+		return;
+	}
+
 	local enabled = ::AlternateDifficulties.Settings.isDebugEnabled();
 	::AlternateDifficulties.Mod.Debug.setFlag("default", enabled);
 
